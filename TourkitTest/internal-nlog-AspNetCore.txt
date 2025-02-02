@@ -2438,3 +2438,17 @@
 2025-02-02 21:35:18.9925 Info Configuration initialized.
 2025-02-02 21:35:19.5603 Info Validating config: TargetNames=lifetimeConsole, ownFile-web, ConfigItems=34, FilePath=D:\TourkitTest\TourkitTest\bin\Debug\net8.0\nlog.config
 2025-02-02 21:35:19.5754 Warn Logger: Microsoft.Hosting.Lifetime configured with duplicate output to target: FileTarget(Name=ownFile-web). LoggingRule with NamePattern='*' and Level=Info has been skipped.
+2025-02-02 21:50:08.3241 Info Registered target NLog.Targets.FileTarget(Name=ownFile-web)
+2025-02-02 21:50:08.3325 Info Registered target NLog.Targets.ConsoleTarget(Name=lifetimeConsole)
+2025-02-02 21:50:08.3325 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.4.2778. Product version: 5.3.4+73d83d3161d31288ca5c554cc50d27b6bed5f28b. GlobalAssemblyCache: False
+2025-02-02 21:50:08.3598 Info Validating config: TargetNames=lifetimeConsole, ownFile-web, ConfigItems=34, FilePath=D:\TourkitTest\TourkitTest\bin\Debug\net8.0\nlog.config
+2025-02-02 21:50:08.3725 Info Configuration initialized.
+2025-02-02 21:50:08.8909 Info Validating config: TargetNames=lifetimeConsole, ownFile-web, ConfigItems=34, FilePath=D:\TourkitTest\TourkitTest\bin\Debug\net8.0\nlog.config
+2025-02-02 21:50:08.9093 Warn Logger: Microsoft.Hosting.Lifetime configured with duplicate output to target: FileTarget(Name=ownFile-web). LoggingRule with NamePattern='*' and Level=Info has been skipped.
+2025-02-02 21:50:31.2968 Info Registered target NLog.Targets.FileTarget(Name=ownFile-web)
+2025-02-02 21:50:31.3097 Info Registered target NLog.Targets.ConsoleTarget(Name=lifetimeConsole)
+2025-02-02 21:50:31.3097 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.4.2778. Product version: 5.3.4+73d83d3161d31288ca5c554cc50d27b6bed5f28b. GlobalAssemblyCache: False
+2025-02-02 21:50:31.3392 Info Validating config: TargetNames=lifetimeConsole, ownFile-web, ConfigItems=34, FilePath=D:\TourkitTest\TourkitTest\bin\Debug\net8.0\nlog.config
+2025-02-02 21:50:31.3392 Info Configuration initialized.
+2025-02-02 21:50:31.8721 Info Validating config: TargetNames=lifetimeConsole, ownFile-web, ConfigItems=34, FilePath=D:\TourkitTest\TourkitTest\bin\Debug\net8.0\nlog.config
+2025-02-02 21:50:31.8888 Warn Logger: Microsoft.Hosting.Lifetime configured with duplicate output to target: FileTarget(Name=ownFile-web). LoggingRule with NamePattern='*' and Level=Info has been skipped.
