@@ -1,0 +1,439 @@
+﻿@{
+    ViewData["Title"] = "Sản phẩm";
+}
+
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.full.min.js" integrity="sha512-RtZU3AyMVArmHLiW0suEZ9McadTdegwbgtiQl5Qqo9kunkVg1ofwueXD8/8wv3Af8jkME3DDe3yLfR8HSJfT2g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+}
+
+<div style="margin-bottom: 15px;">
+    <button id="btnAdd" class="btn btn-success">Thêm</button>
+    <button id="btnEdit" class="btn btn-primary" disabled>Sửa</button>
+    <button id="btnDelete" class="btn btn-danger" disabled>Xóa</button>
+</div>
+<table id="productsTable" class="display" style="width: 100%;"></table>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="productModalLabel">Modal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3" id="productIdContainer" style="display: none;">
+                    <label class="form-label">ID</label>
+                    <input type="text" class="form-control" id="Id" disabled>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Tên sản phẩm  <span style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="Name">
+                    <div class="text-danger" id="nameError" style="display: none;">Vui lòng nhập tên sản phẩm.</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Giá</label>
+                    <input type="number" class="form-control" id="Price" min="0">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ngày nhập</label>
+                    <input type="date" class="form-control" id="DateAdd">
+                    <div class="text-danger" id="dateError" style="display: none;">Vui lòng nhập ngày hợp lệ</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Loại sản phẩm</label>
+                    <select name="CategorySelect" class="form-control" id="CategorySelect" multiple>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" id="saveProduct">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        const table = $('#productsTable').DataTable({
+            processing: true,
+            serverSide: true,
+            ordering: false,
+            responsive: true,
+            ajax: {
+                url: '/api/products',
+                type: 'POST',
+                contentType: 'application/json',
+                data: function (d) {
+                    return JSON.stringify({
+                        PageNumber: Math.floor(d.start / d.length) + 1,
+                        PageSize: d.length,
+                        Search: d.search.value || '',
+                        CategoryId: $('#CategorySelectSearch').val() || [], 
+                        Draw: d.draw
+                    });
+                },
+                dataSrc: function (json) {
+                    return json.data.map(item => {
+                        return {
+                            ...item,
+                            nameCategories: item.productCategories.map(pc => pc.name).join(', '),
+                        };
+                    });
+                },
+            },
+            columns: [
+                {
+                    title: '<input type="checkbox" id="selectAll" />',
+                    data: 'id',
+                    orderable: false,
+                    render: function (data) {
+                        return `<input type="checkbox" class="select-item" value="${data}" />`;
+                    }
+                },
+                { title: 'ID', data: 'id' },
+                { title: 'Tên', data: 'name' },
+                { title: 'Giá', data: 'price' },
+                { title: 'Tên Loại', data: 'nameCategories' },
+                {
+                    title: 'Ngày thêm',
+                    data: 'dateAdd',
+                    render: function (data) {
+                        return formatDate(data);
+                    }
+                },
+                {
+                    title: 'Chức năng',
+                    data: 'id',
+                    render: function (data) {
+                        return `
+                                            <button class="btn btn-primary btn-sm" onclick="editProduct('${data}')">Sửa</button>
+                                            <button class="btn btn-danger btn-sm" onclick="deleteProduct('${data}')">Xóa</button>
+                                                                                                                                        `;
+                    }
+                }
+            ],
+            order: [[1, 'asc']],
+            pageLength: 10,
+            lengthMenu: [10, 25, 50, 100],
+            layout: {
+                top2End: 'search',
+                topEnd: function () {
+                    let toolbar = document.createElement('div');
+                    toolbar.innerHTML = '<select name = "CategorySelectSearch" class="form-control" id = "CategorySelectSearch" multiple ></select>';
+
+                    return toolbar;
+                }
+            },
+            initComplete: function () {
+                $('#CategorySelectSearch').on('change', function () {
+                    table.ajax.reload();
+                });
+            }
+        });
+        // load select option product type
+        $("#CategorySelectSearch").select2({
+            placeholder: "Tìm kiếm loại sp",
+            theme: "bootstrap4",
+            allowClear: true,
+            ajax: {
+                url: "/api/categories",
+                type: 'GET',
+                contentType: "application/json; charset=utf-8",
+                processResults: function (result) {
+                    return {
+                        results: $.map(result?.response?.result?.data, function (item) {
+                            return {
+                                id: item.id,
+                                text: item.name
+                            };
+                        }),
+                    };
+                }
+            }
+        });
+        // Choose all checkbox
+        $('#selectAll').on('click', function () {
+            const isChecked = $(this).prop('checked');
+            $('.select-item').prop('checked', isChecked);
+            toggleActionButtons();
+        });
+        // handle when select/deselect checkbox on row
+        $('#productsTable').on('change', '.select-item', function () {
+            const allChecked = $('.select-item:checked').length === $('.select-item').length;
+            $('#selectAll').prop('checked', allChecked);
+            toggleActionButtons();
+        });
+
+        // togle on checkbox - disable
+        function toggleActionButtons() {
+            const hasChecked = $('.select-item:checked').length > 0;
+            $('#btnEdit').prop('disabled', $('.select-item:checked').length !== 1);
+            $('#btnDelete').prop('disabled', !hasChecked);
+        }
+
+        $('#btnAdd').on('click', function () {
+            $("#dateError").hide();
+            $("#nameError").hide();
+            $("#productIdContainer").hide();
+            $("#Name").val('');
+            $("#Price").val(0);
+            $("#DateAdd").val('');
+            $("#CategorySelect").val([]).trigger("change");
+            $("#productModalLabel").text("Thêm sản phẩm");
+            $("#saveProduct").off('click').on('click', addProduct);
+            $("#productModal").modal('show');
+            setTimeout(() => {
+                $("#CategorySelect").select2({
+                    placeholder: "Choose a type product",
+                    theme: "bootstrap4",
+                    allowClear: true,
+                    dropdownParent: $("#productModal"),
+                    ajax: {
+                        url: "/api/categories",
+                        type: 'GET',
+                        contentType: "application/json; charset=utf-8",
+                        processResults: function (result) {
+                            return {
+                                results: $.map(result?.response?.result?.data, function (item) {
+                                    return {
+                                        id: item.id,
+                                        text: item.name
+                                    };
+                                }),
+                            };
+                        }
+                    }
+                });
+            }, 300);
+        });
+
+        $('#btnEdit').on('click', function () {
+            const selectedId = $('.select-item:checked').val();
+
+            editProduct(selectedId);
+        });
+        // delete
+        $('#btnDelete').on('click', function () {
+            const selectedIds = $('.select-item:checked').map(function () {
+                return $(this).val();
+            }).get();
+            if (confirm('Bạn có chắc chắn muốn xóa các sản phẩm này không?')) {
+                $.ajax({
+                    url: '/api/delete-products',
+                    type: 'DELETE',
+                    contentType: 'application/json',
+                    data: JSON.stringify(selectedIds),
+                    success: function (response) {
+                        if (response.response.result) {
+                            alert('Xóa thành công.');
+                            $('#productsTable').DataTable().ajax.reload();
+                        } else {
+                            alert('Xóa thất bại: ' + response.message);
+                        }
+                    },
+                    error: function (xhr) {
+                        alert('Đã xảy ra lỗi: ' + xhr.responseText);
+                    }
+                });
+            }
+        });
+    });
+    //Delete
+    function deleteProduct(id) {
+        if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?')) {
+            $.ajax({
+                url: '/api/delete-products',
+                type: 'DELETE',
+                contentType: 'application/json',
+                data: JSON.stringify([id]),
+                success: function (response) {
+                    if (response.response.result) {
+                        alert('Xóa thành công.');
+                        $('#productsTable').DataTable().ajax.reload();
+                    } else {
+                        alert('Xóa thất bại: ' + response.message);
+                    }
+                },
+                error: function (xhr) {
+                    alert('Đã xảy ra lỗi: ' + xhr.responseText);
+                }
+            });
+        }
+    }
+    // Add new
+    function addProduct() {
+        if (!validateProduct()) return;
+
+        let product = {
+            name: $("#Name").val().trim(),
+            price: $("#Price").val(),
+            dateAdd: $("#DateAdd").val(),
+            categories: $("#CategorySelect").val()
+        };
+
+        $.ajax({
+            url: "/api/add-product",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(product),
+            success: function (res) {
+                if (res.response.success) {
+                    alert("Thêm thành công!");
+                    location.reload();
+                }
+                else {
+                    alert(res.response.result);
+                }
+            },
+            error: function () {
+                alert("Thêm thất bại! Kiểm tra dữ liệu.");
+            }
+        });
+    }
+    // update
+    function updateProduct() {
+        if (!validateProduct()) return;
+
+        let product = {
+            id: $("#Id").val().trim(),
+            name: $("#Name").val().trim(),
+            price: $("#Price").val(),
+            dateAdd: $("#DateAdd").val(),
+            categories: $("#CategorySelect").val(),
+        };
+
+        $.ajax({
+            url: `/api/update-product`,
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(product),
+            success: function (res) {
+                if (res.response.success) {
+                    alert("Cập nhật thành công!");
+                    location.reload();
+                }
+                else {
+                    alert(res.response.result);
+                }
+            },
+            error: function () {
+                alert("Cập nhật thất bại! Vui lòng thử lại.");
+            }
+        });
+    }
+
+    function editProduct(id) {
+        $.ajax({
+            url: `/api/product-id?id=${id}`,
+            type: "Get",
+            contentType: "application/json",
+            success: function (rs) {
+                $("#dateError").hide();
+                $("#nameError").hide();
+                $("#productIdContainer").show();
+                $("#Id").val(id);
+                $("#Name").val(rs.response.result.name);
+                $("#Price").val(rs.response.result.price);
+                $("#DateAdd").val(formatDate2(rs.response.result.dateAdd));
+                $("#CategorySelect").val([]).trigger("change");
+
+                let selectedCategories = rs.response.result.productCategories.map(function (item) {
+                    return { id: item.id, name: item.name };
+                });
+
+                $("#productModalLabel").text("Sửa sản phẩm");
+                $("#saveProduct").off('click').on('click', updateProduct);
+                $("#productModal").modal('show');
+                setTimeout(() => {
+                    $("#CategorySelect").select2({
+                        placeholder: "Choose a type product",
+                        theme: "bootstrap4",
+                        allowClear: true,
+                        dropdownParent: $("#productModal"),
+                        ajax: {
+                            url: "/api/categories",
+                            type: 'GET',
+                            contentType: "application/json; charset=utf-8",
+                            processResults: function (result) {
+                                return {
+                                    results: $.map(result?.response?.result?.data, function (item) {
+                                        return {
+                                            id: item.id,
+                                            text: item.name
+                                        };
+                                    })
+                                };
+                            },
+                            cache: true,
+                            delay: 250
+                        }
+                    });
+
+                    let selectElement = $("#CategorySelect");
+                    $.each(selectedCategories, function (index, obj) {
+                        var option = new Option(obj.name, obj.id, true, true);
+                        selectElement.append(option).trigger("change");
+                    });
+
+                }, 300);
+            },
+            error: function () {
+                alert("Có lỗi xảy ra vui lòng thử lại.");
+            }
+        });
+    }
+
+    function validateProduct() {
+        let name = $("#Name").val().trim();
+        let price = $("#Price").val();
+
+        if (name === "") {
+            $("#nameError").show();
+            return false;
+        }
+        $("#nameError").hide();
+
+        let importDate = formatDate($("#DateAdd").val().trim());
+        let dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+        if (!importDate.match(dateRegex)) {
+            $("#dateError").show();
+            return false;
+        }
+        $("#dateError").hide();
+
+        if (price === "") {
+            $("#Price").val(0);
+        }
+
+        return true;
+    }
+
+    function formatDate(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
+
+    function formatDate2(dateString) {
+        var date = new Date(dateString);
+        var utcDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+        var formattedDate = utcDate.toISOString().split('T')[0];
+        return formattedDate;
+    }
+</script>
+
+<style>
+    .select2-container {
+        z-index: 1055 !important;
+    }
+
+    #CategorySelectSearch {
+        width: 200px !important;
+    }
+</style>

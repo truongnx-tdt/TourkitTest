@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TourkitTest", "TourkitTest\TourkitTest.csproj", "{750785A7-3335-4720-A367-79C0CD226D9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TourkitTest.Data", "TourkitTest.Data\TourkitTest.Data.csproj", "{03038D95-F327-4F73-B27E-2BE86D09497E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{489F60E7-F575-49B6-B514-0D1B35DEEF92}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TourkitTest.Data.EF", "TourkitTest.Data.EF\TourkitTest.Data.EF.csproj", "{9A97273D-37C0-4705-A46B-E10C242C24DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TourkitTest.Application", "TourkitTest.Application\TourkitTest.Application.csproj", "{EF1D6C85-699B-4C22-9C4E-130EBB289345}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TourkitTest.Manufacturer", "TourkitTest.Manufacturer\TourkitTest.Manufacturer.csproj", "{106A3CD8-D457-48FE-ACD3-523A4F7798A2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{750785A7-3335-4720-A367-79C0CD226D9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{750785A7-3335-4720-A367-79C0CD226D9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{750785A7-3335-4720-A367-79C0CD226D9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{750785A7-3335-4720-A367-79C0CD226D9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03038D95-F327-4F73-B27E-2BE86D09497E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03038D95-F327-4F73-B27E-2BE86D09497E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03038D95-F327-4F73-B27E-2BE86D09497E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03038D95-F327-4F73-B27E-2BE86D09497E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A97273D-37C0-4705-A46B-E10C242C24DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A97273D-37C0-4705-A46B-E10C242C24DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A97273D-37C0-4705-A46B-E10C242C24DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A97273D-37C0-4705-A46B-E10C242C24DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF1D6C85-699B-4C22-9C4E-130EBB289345}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF1D6C85-699B-4C22-9C4E-130EBB289345}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF1D6C85-699B-4C22-9C4E-130EBB289345}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF1D6C85-699B-4C22-9C4E-130EBB289345}.Release|Any CPU.Build.0 = Release|Any CPU
+		{106A3CD8-D457-48FE-ACD3-523A4F7798A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{106A3CD8-D457-48FE-ACD3-523A4F7798A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{106A3CD8-D457-48FE-ACD3-523A4F7798A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{106A3CD8-D457-48FE-ACD3-523A4F7798A2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {872A9D21-0DB5-40FB-8978-A4F6AC26987B}
+	EndGlobalSection
+EndGlobal
